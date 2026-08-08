@@ -1,0 +1,89 @@
+.hero {
+  background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-white) 100%);
+  padding-block: var(--space-2xl) var(--space-3xl);
+  overflow: hidden;
+}
+
+/* Entrada ativada no carregamento da página (não por scroll — o Hero já
+   está visível na primeira dobra). O texto entra primeiro; a foto segue
+   com um pequeno atraso, criando uma sequência de leitura natural
+   (título → ação → imagem) sem competir por atenção ao mesmo tempo. */
+[data-hero-enter] {
+  animation: heroEnter var(--duration-reveal) var(--ease-reveal) both;
+}
+
+[data-hero-enter-delayed] {
+  animation: heroEnter var(--duration-reveal) var(--ease-reveal) 120ms both;
+}
+
+@keyframes heroEnter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--reveal-translate)) scale(var(--reveal-scale));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-2xl);
+  align-items: center;
+}
+
+.content {
+  max-width: 560px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-sage-deep);
+  background-color: var(--color-sage-tint);
+  padding: var(--space-xs) var(--space-md);
+  border-radius: 999px;
+  margin-bottom: var(--space-md);
+}
+
+.title {
+  font-size: var(--fs-h1);
+  font-style: italic;
+}
+
+.arc {
+  margin-top: var(--space-md);
+}
+
+.lead {
+  margin-top: var(--space-lg);
+  font-size: var(--fs-lead);
+  color: var(--color-ink-soft);
+  max-width: 46ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.imageColumn {
+  display: flex;
+  justify-content: center;
+}
+
+.imageColumn > * {
+  width: min(360px, 100%);
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1.05fr 0.95fr;
+  }
+}

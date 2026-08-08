@@ -1,0 +1,76 @@
+.form {
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-soft);
+  display: grid;
+  gap: var(--space-md);
+}
+
+.field {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.label {
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.input,
+.select,
+.textarea {
+  border: 1.5px solid var(--color-cream-deep);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  color: var(--color-ink);
+  background-color: var(--color-white);
+  /* Feedback de foco discreto: só cor de borda + sombra (nunca outline
+     "duro" nem deslocamento), mesma duração/curva usadas nos hovers do
+     resto do site — consistência entre os presets de microinteração. */
+  transition: border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.input:focus-visible,
+.select:focus-visible,
+.textarea:focus-visible {
+  outline: none;
+  border-color: var(--color-sage-deep);
+  box-shadow: 0 0 0 3px var(--color-sage-tint);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.errorText {
+  font-size: var(--fs-caption);
+  color: #a5493f;
+}
+
+.privacyNote {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  background-color: var(--color-sage-tint);
+  border-radius: var(--radius-sm);
+  padding: var(--space-md);
+  font-size: var(--fs-caption);
+  color: var(--color-ink-soft);
+}
+
+.noteIcon {
+  color: var(--color-sage-deep);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.statusMessage {
+  font-size: var(--fs-small);
+  color: var(--color-sage-deep);
+  font-weight: 600;
+}

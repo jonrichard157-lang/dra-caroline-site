@@ -1,0 +1,8 @@
+.section {
+  padding-block: var(--space-3xl);
+  background-color: var(--color-cream);
+}
+
+.list {
+  max-width: 760px;
+}

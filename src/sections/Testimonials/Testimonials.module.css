@@ -1,0 +1,86 @@
+.section {
+  padding-block: var(--space-3xl);
+  background-color: var(--color-rose);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-lg);
+}
+
+.footer {
+  margin-top: var(--space-xl);
+  display: flex;
+  justify-content: center;
+}
+
+.stateMessage {
+  color: var(--color-ink-soft);
+  font-size: var(--fs-small);
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  text-align: center;
+}
+
+/* ---------- Skeleton (estado de carregamento) ----------
+   Reproduz exatamente as dimensões do ReviewCard real (mesmo padding,
+   radius e alturas) para que a troca skeleton -> conteúdo não cause
+   layout shift. */
+.skeletonCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-soft);
+  height: 100%;
+}
+
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.skeletonAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: var(--color-cream);
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeletonLines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  flex-grow: 1;
+}
+
+.skeletonLine {
+  height: 0.75rem;
+  border-radius: 999px;
+  background-color: var(--color-cream);
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonAvatar,
+  .skeletonLine {
+    animation: none;
+  }
+}

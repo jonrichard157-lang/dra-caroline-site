@@ -1,0 +1,146 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: rgba(248, 244, 236, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-cream-deep);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--header-height);
+  gap: var(--space-lg);
+}
+
+.brand {
+  text-decoration: none;
+  color: var(--color-ink);
+}
+
+.brandName {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-style: italic;
+  line-height: 1.1;
+}
+
+.brandTitle {
+  display: block;
+  font-size: var(--fs-caption);
+  color: var(--color-ink-soft);
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.nav {
+  display: none;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.navLink {
+  text-decoration: none;
+  color: var(--color-ink);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  padding-block: var(--space-xs);
+  border-bottom: 1.5px solid transparent;
+  transition: border-color var(--duration-base) var(--ease-standard);
+}
+
+.navLink:hover {
+  border-color: var(--color-gold);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.ctaDesktop {
+  display: none;
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-cream-deep);
+  background-color: var(--color-white);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+@media (min-width: 900px) {
+  .nav {
+    display: block;
+  }
+
+  .ctaDesktop {
+    display: inline-flex;
+  }
+
+  .menuButton {
+    display: none;
+  }
+}
+
+/* ---------- Menu mobile ---------- */
+.mobileMenu {
+  position: fixed;
+  inset: 0;
+  top: var(--header-height);
+  background-color: var(--color-cream);
+  z-index: 90;
+  padding: var(--space-lg);
+  overflow-y: auto;
+  /* Painel iniciado pelo usuário (toque no botão de menu): usa ease-out
+     direto, sem IntersectionObserver — é uma abertura, não um scroll reveal. */
+  animation: menuEnter var(--duration-base) var(--ease-reveal);
+}
+
+@keyframes menuEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobileList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.mobileLink {
+  text-decoration: none;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+}
+
+.mobileCta {
+  margin-top: var(--space-lg);
+}
+
+@media (min-width: 900px) {
+  .mobileMenu {
+    display: none;
+  }
+}

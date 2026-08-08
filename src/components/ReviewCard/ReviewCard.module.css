@@ -1,0 +1,101 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid transparent;
+  transition: border-color var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard),
+    transform var(--duration-base) var(--ease-standard);
+  height: 100%;
+}
+
+.card:hover {
+  border-color: var(--color-gold-soft);
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.avatarFallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--color-rose);
+  color: var(--color-sage-deep);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  flex-shrink: 0;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.authorName {
+  font-weight: 700;
+  font-size: var(--fs-small);
+  color: var(--color-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.date {
+  font-size: var(--fs-caption);
+  color: var(--color-ink-faint);
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.starFilled {
+  fill: var(--color-gold);
+  stroke: none;
+}
+
+.starEmpty {
+  fill: var(--color-rose-deep);
+  stroke: none;
+}
+
+.text {
+  color: var(--color-ink-soft);
+  font-size: var(--fs-small);
+  flex-grow: 1;
+  /* Limita o texto a 6 linhas para manter os cards com altura consistente,
+     evitando layout shift e cards com alturas muito díspares na grade. */
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.textFallback {
+  font-style: italic;
+  color: var(--color-ink-faint);
+}

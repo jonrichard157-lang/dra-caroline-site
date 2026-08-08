@@ -1,0 +1,78 @@
+.section {
+  padding-block: var(--space-3xl);
+  background-color: var(--color-cream);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-2xl);
+  align-items: start;
+}
+
+.imageColumn {
+  display: flex;
+  justify-content: center;
+}
+
+.imageColumn > * {
+  width: min(340px, 100%);
+}
+
+.content {
+  max-width: 620px;
+}
+
+.bio {
+  font-size: var(--fs-lead);
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-xl);
+}
+
+.credentials {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.credentialGroup {
+  border-top: 1px solid var(--color-rose-deep);
+  padding-top: var(--space-md);
+}
+
+.credentialHeading {
+  font-size: var(--fs-h3);
+  font-style: italic;
+  margin-bottom: var(--space-sm);
+}
+
+.credentialList {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+.credentialItem {
+  font-size: var(--fs-small);
+  color: var(--color-ink-soft);
+  padding-left: var(--space-md);
+  position: relative;
+}
+
+.credentialItem::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-gold);
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 0.85fr 1.15fr;
+  }
+
+  .credentials {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

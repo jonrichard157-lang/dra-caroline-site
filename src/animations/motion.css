@@ -1,0 +1,197 @@
+/**
+ * ============================================================================
+ * SISTEMA DE MOTION — fonte única de verdade
+ * ============================================================================
+ * Este arquivo define TODOS os tokens (duração, easing, distância) e as
+ * classes utilitárias de animação usadas no site. Nenhum componente deve
+ * declarar um `transition` ou `@keyframes` novo fora daqui — em vez disso,
+ * compõe as classes abaixo com as classes de CSS Modules já existentes.
+ *
+ * Por que global (não CSS Module)? Estas classes são compostas junto com
+ * classes de diferentes arquivos .module.css (Testimonials, Treatments,
+ * Differentials, etc). O projeto já segue esse padrão para utilitários
+ * cross-cutting (ver `.container`, `.visually-hidden` em globals.css).
+ *
+ * Princípios seguidos (frontend-design > web-animation-design > motion-engineering):
+ * - Apenas `transform` e `opacity` são animados (GPU-only, 60fps, zero layout shift).
+ * - Easing "ease-out" para elementos entrando na tela (scroll reveal).
+ * - Easing "ease" (--ease-standard, já definido em variables.css) para hover.
+ * - Nunca bounce, nunca scale acima de 1.02, nunca rotate/flip.
+ * - `prefers-reduced-motion` remove praticamente tudo, sem exceção.
+ * ============================================================================
+ */
+
+:root {
+  /* ---------- Duração ----------
+     Reaproveita --duration-fast (160ms) e --duration-base (260ms), já
+     definidos em variables.css e usados nos hovers existentes do site.
+     Adiciona apenas o que faltava: uma duração para reveals de scroll,
+     que movem elementos maiores e por isso pedem alguns ms a mais —
+     ainda assim bem abaixo do limiar em que uma animação começa a
+     parecer lenta. */
+  --duration-reveal: 480ms;
+  --duration-reveal-child: 380ms; /* itens dentro de uma grade (stagger) */
+
+  /* ---------- Easing ----------
+     --ease-standard (cubic-bezier(0.4,0,0.2,1)) já cobre hovers/cores.
+     --ease-reveal é uma curva ease-out (aceleração inicial, chegada
+     suave) — a curva correta para elementos "entrando" na tela. */
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ---------- Distâncias ----------
+     Deslocamentos discretos — o suficiente para o olho perceber
+     "assentamento", nunca um movimento chamativo. */
+  --reveal-translate: 14px;
+  --reveal-scale: 0.98;
+
+  /* ---------- Microinterações ---------- */
+  --hover-card-lift: -4px;
+  --hover-card-scale: 1.012;
+  --hover-icon-scale: 1.08;
+  --press-scale: 0.98;
+
+  /* ---------- Stagger ----------
+     Incremento de atraso entre filhos de uma lista revelada em conjunto. */
+  --stagger-step: 70ms;
+}
+
+/* ============================================================================
+   PRESET: sectionReveal / fadeUp
+   Uso: elemento entra com leve translateY + scale sutil ao cruzar o viewport.
+   Aplicado via useReveal/AnimatedSection, que alterna a classe `is-visible`.
+   ============================================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--reveal-translate)) scale(var(--reveal-scale));
+  transition: opacity var(--duration-reveal) var(--ease-reveal),
+    transform var(--duration-reveal) var(--ease-reveal);
+  will-change: transform, opacity;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* PRESET: fadeIn — sem deslocamento, só opacidade (para elementos onde
+   qualquer movimento distrairia, ex.: imagens grandes, blocos de texto longos). */
+.reveal-fade {
+  opacity: 0;
+  transition: opacity var(--duration-reveal) var(--ease-reveal);
+}
+
+.reveal-fade.is-visible {
+  opacity: 1;
+}
+
+/* PRESET: fadeLeft — entra de uma leve translação horizontal. Reservado
+   para elementos com forte relação de leitura esquerda→direita. */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(calc(-1 * var(--reveal-translate)));
+  transition: opacity var(--duration-reveal) var(--ease-reveal),
+    transform var(--duration-reveal) var(--ease-reveal);
+  will-change: transform, opacity;
+}
+
+.reveal-left.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* PRESET: staggerChildren — aplicado ao container; os filhos diretos
+   (até 8, suficiente para as grades do site) herdam um atraso crescente,
+   criando uma sequência ao invés de um "flash" simultâneo. Cada filho
+   ainda precisa ter a classe .reveal/.reveal-fade para de fato animar. */
+.reveal-stagger > :nth-child(1) { transition-delay: calc(var(--stagger-step) * 0); }
+.reveal-stagger > :nth-child(2) { transition-delay: calc(var(--stagger-step) * 1); }
+.reveal-stagger > :nth-child(3) { transition-delay: calc(var(--stagger-step) * 2); }
+.reveal-stagger > :nth-child(4) { transition-delay: calc(var(--stagger-step) * 3); }
+.reveal-stagger > :nth-child(5) { transition-delay: calc(var(--stagger-step) * 4); }
+.reveal-stagger > :nth-child(6) { transition-delay: calc(var(--stagger-step) * 5); }
+.reveal-stagger > :nth-child(7) { transition-delay: calc(var(--stagger-step) * 6); }
+.reveal-stagger > :nth-child(8) { transition-delay: calc(var(--stagger-step) * 7); }
+
+/* Dentro de uma grade com stagger, os filhos usam a duração "child"
+   (um pouco mais curta — são elementos menores que uma seção inteira). */
+.reveal-stagger > .reveal,
+.reveal-stagger > .reveal-fade,
+.reveal-stagger > .reveal-left {
+  transition-duration: var(--duration-reveal-child);
+}
+
+/* ============================================================================
+   PRESET: hoverCard
+   Uso: cards (tratamentos, avaliações, diferenciais). Elevação sutil +
+   sombra progressiva + scale quase imperceptível — nunca "pulo".
+   ============================================================================ */
+.hover-card {
+  transition: transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hover-card:hover {
+    transform: translateY(var(--hover-card-lift)) scale(var(--hover-card-scale));
+  }
+}
+
+/* ============================================================================
+   PRESET: hoverIcon
+   Uso: ícones dentro de cards/links. Discreto o bastante para nunca competir
+   com o conteúdo textual ao lado.
+   ============================================================================ */
+.hover-icon {
+  display: inline-flex;
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hover-icon:hover,
+  *:hover > .hover-icon {
+    transform: scale(var(--hover-icon-scale));
+  }
+}
+
+/* ============================================================================
+   PRESET: buttonHover / pressable
+   Uso: qualquer elemento clicável que precise de feedback de "pressão".
+   Só transform — nunca afeta o layout ao redor.
+   ============================================================================ */
+.pressable {
+  transition: transform var(--duration-fast) var(--ease-standard);
+}
+
+.pressable:active {
+  transform: scale(var(--press-scale));
+}
+
+/* ============================================================================
+   ACESSIBILIDADE — prefers-reduced-motion
+   Regra ampla (padrão recomendado) + reforço explícito nas classes do
+   sistema, garantindo que nada fique preso em opacity:0.
+   ============================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal,
+  .reveal-fade,
+  .reveal-left {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hover-card:hover,
+  .hover-icon:hover,
+  .pressable:active {
+    transform: none;
+  }
+}

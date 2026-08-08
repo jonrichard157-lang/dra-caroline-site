@@ -1,0 +1,38 @@
+.section {
+  padding-block: var(--space-3xl);
+  background-color: var(--color-cream);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-lg);
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+}
+
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--color-sage-tint);
+  color: var(--color-sage-deep);
+  flex-shrink: 0;
+}
+
+.label {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  padding-top: var(--space-2xs);
+}

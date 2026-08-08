@@ -1,0 +1,59 @@
+.section {
+  padding-block: var(--space-3xl);
+  background-color: var(--color-cream);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-2xl);
+}
+
+.infoList {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.infoIcon {
+  color: var(--color-sage-deep);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.infoLabel {
+  font-size: var(--fs-caption);
+  color: var(--color-ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: block;
+}
+
+.infoValue {
+  font-size: var(--fs-small);
+  color: var(--color-ink);
+}
+
+.infoLink {
+  text-decoration: none;
+  color: var(--color-ink);
+}
+
+.infoLink:hover {
+  text-decoration: underline;
+}
+
+.hoursList {
+  display: grid;
+  gap: var(--space-2xs);
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 0.85fr 1.15fr;
+  }
+}

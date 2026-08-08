@@ -1,0 +1,37 @@
+.item {
+  border-bottom: 1px solid var(--color-cream-deep);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-block: var(--space-md);
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.icon {
+  color: var(--color-sage-deep);
+  flex-shrink: 0;
+  /* Sem rotate/flip (fora do escopo permitido pelo motion system): o
+     estado aberto é comunicado por cor, não por giro do ícone. */
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.item[open] .icon {
+  color: var(--color-gold);
+}
+
+.content {
+  padding-bottom: var(--space-md);
+  color: var(--color-ink-soft);
+  font-size: var(--fs-small);
+  max-width: 65ch;
+}

@@ -1,0 +1,5 @@
+# CONFIRMAR: atualize a URL do Sitemap abaixo com o domínio final antes de publicar
+User-agent: *
+Allow: /
+
+Sitemap: https://www.draCarolineFloriano.com.br/sitemap.xml

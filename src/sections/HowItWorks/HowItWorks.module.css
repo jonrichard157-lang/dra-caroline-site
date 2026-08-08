@@ -1,0 +1,36 @@
+.section {
+  padding-block: var(--space-3xl);
+  background-color: var(--color-white);
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-xl);
+  counter-reset: step;
+  position: relative;
+}
+
+.step {
+  position: relative;
+  padding-top: var(--space-lg);
+}
+
+.stepNumber {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 2.25rem;
+  color: var(--color-gold);
+  display: block;
+  margin-bottom: var(--space-sm);
+}
+
+.stepTitle {
+  font-size: var(--fs-h3);
+  margin-bottom: var(--space-xs);
+}
+
+.stepDescription {
+  color: var(--color-ink-soft);
+  font-size: var(--fs-small);
+}

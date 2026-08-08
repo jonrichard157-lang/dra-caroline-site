@@ -1,0 +1,8 @@
+{
+  "framework": "vite",
+  "functions": {
+    "api/reviews.ts": {
+      "maxDuration": 10
+    }
+  }
+}
