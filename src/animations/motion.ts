@@ -14,6 +14,9 @@ export {
   hoverIcon,
   buttonHover,
   sectionReveal,
+  photoUnveil,
+  scrollProgress,
+  parallaxSoft,
 } from "./variants";
 export type { RevealVariant } from "./variants";
 export {

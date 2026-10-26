@@ -54,8 +54,11 @@ export const ReviewCard = memo(function ReviewCard({ review }: ReviewCardProps) 
             src={review.authorPhotoUrl ?? undefined}
             alt=""
             loading="lazy"
-            width={48}
-            height={48}
+            width={44}
+            height={44}
+            // Fotos do Google (googleusercontent) às vezes recusam o
+            // carregamento quando recebem o Referer de outro site.
+            referrerPolicy="no-referrer"
             onError={() => setPhotoFailed(true)}
           />
         ) : (
@@ -65,7 +68,18 @@ export const ReviewCard = memo(function ReviewCard({ review }: ReviewCardProps) 
         )}
 
         <div className={styles.identity}>
-          <span className={styles.authorName}>{authorName}</span>
+          {review.authorUrl ? (
+            <a
+              className={`${styles.authorName} ${styles.authorLink}`}
+              href={review.authorUrl}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+            >
+              {authorName}
+            </a>
+          ) : (
+            <span className={styles.authorName}>{authorName}</span>
+          )}
           <span className={styles.date}>{formattedDate}</span>
         </div>
       </header>

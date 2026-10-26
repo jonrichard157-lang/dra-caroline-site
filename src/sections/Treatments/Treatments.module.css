@@ -5,14 +5,12 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-lg);
+  column-gap: var(--space-2xl);
+  border-bottom: 1px solid var(--color-line);
 }
 
-.disclaimer {
-  margin-top: var(--space-xl);
-  font-size: var(--fs-caption);
-  color: var(--color-ink-faint);
-  border-top: 1px solid var(--color-cream-deep);
-  padding-top: var(--space-md);
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

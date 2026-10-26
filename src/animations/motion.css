@@ -16,7 +16,8 @@
  * - Apenas `transform` e `opacity` são animados (GPU-only, 60fps, zero layout shift).
  * - Easing "ease-out" para elementos entrando na tela (scroll reveal).
  * - Easing "ease" (--ease-standard, já definido em variables.css) para hover.
- * - Nunca bounce, nunca scale acima de 1.02, nunca rotate/flip.
+ * - Nunca bounce, nunca scale acima de 1.02. Rotação só em resposta a uma ação
+ *   (ex.: o chevron do acordeão indicando aberto/fechado).
  * - `prefers-reduced-motion` remove praticamente tudo, sem exceção.
  * ============================================================================
  */
@@ -45,14 +46,25 @@
   --reveal-scale: 0.98;
 
   /* ---------- Microinterações ---------- */
-  --hover-card-lift: -4px;
-  --hover-card-scale: 1.012;
+  --hover-card-lift: -3px;
+  /* Sem scale em cards: ampliar um bloco com texto o deixa levemente
+     borrado durante a transição. A elevação sozinha já dá o feedback. */
+  --hover-card-scale: 1;
   --hover-icon-scale: 1.08;
   --press-scale: 0.98;
 
   /* ---------- Stagger ----------
      Incremento de atraso entre filhos de uma lista revelada em conjunto. */
   --stagger-step: 70ms;
+
+  /* ---------- Animações ligadas à rolagem ----------
+     A revelação de foto e o traço da linha do tempo são elementos grandes
+     e raros (uma vez por visita), por isso podem durar mais que um reveal
+     comum sem parecer lentos. */
+  --duration-unveil: 900ms;
+  --duration-draw: 700ms;
+  --unveil-image-scale: 1.06;
+  --parallax-distance: 48px;
 }
 
 /* ============================================================================
@@ -112,6 +124,16 @@
 .reveal-stagger > :nth-child(7) { transition-delay: calc(var(--stagger-step) * 6); }
 .reveal-stagger > :nth-child(8) { transition-delay: calc(var(--stagger-step) * 7); }
 
+/* Os filhos aparecem quando o container entra na tela: o container recebe
+   `is-visible` (via AnimatedSection) e cada filho, com seu atraso acima,
+   transiciona para o estado final. */
+.reveal-stagger.is-visible > .reveal,
+.reveal-stagger.is-visible > .reveal-fade,
+.reveal-stagger.is-visible > .reveal-left {
+  opacity: 1;
+  transform: none;
+}
+
 /* Dentro de uma grade com stagger, os filhos usam a duração "child"
    (um pouco mais curta — são elementos menores que uma seção inteira). */
 .reveal-stagger > .reveal,
@@ -168,6 +190,94 @@
 }
 
 /* ============================================================================
+   PRESET: photoUnveil
+   Uso: fotos em destaque fora da primeira dobra (FramedPhoto com `reveal`).
+   Uma "cortina" na cor da seção recolhe de cima para baixo enquanto a foto
+   assenta de um zoom leve para o tamanho real. A cortina é um pseudo-
+   elemento animado só com transform (sem clip-path), como o resto do
+   sistema.
+   ============================================================================ */
+.photo-unveil {
+  position: relative;
+}
+
+.photo-unveil::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-color: var(--unveil-color, var(--color-surface));
+  transform-origin: bottom;
+  transition: transform var(--duration-unveil) var(--ease-reveal);
+  pointer-events: none;
+}
+
+.photo-unveil.is-visible::after {
+  transform: scaleY(0);
+}
+
+.photo-unveil img {
+  transform: scale(var(--unveil-image-scale));
+  transition: transform calc(var(--duration-unveil) * 1.3) var(--ease-reveal);
+}
+
+.photo-unveil.is-visible img {
+  transform: scale(1);
+}
+
+/* ============================================================================
+   PRESET: scrollProgress
+   Barra fina que acompanha a rolagem da página (no rodapé do header).
+   Usa animação ligada à rolagem do próprio CSS: roda fora da thread
+   principal e não precisa de nenhum listener em JavaScript. Em navegadores
+   sem suporte, a barra simplesmente não aparece.
+   ============================================================================ */
+.scroll-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background-color: var(--color-gold);
+  transform-origin: left;
+  transform: scaleX(0);
+  pointer-events: none;
+}
+
+@keyframes scrollProgress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ============================================================================
+   PRESET: parallaxSoft
+   A foto do Início desce um pouco mais devagar que a página ao rolar,
+   dando profundidade sem tirar o conteúdo do lugar. Mesmo mecanismo da
+   barra de progresso (animação ligada à rolagem, só transform).
+   ============================================================================ */
+@keyframes parallaxSoft {
+  to {
+    transform: translateY(var(--parallax-distance));
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress {
+      animation: scrollProgress linear both;
+      animation-timeline: scroll(root block);
+    }
+
+    .parallax-soft {
+      animation: parallaxSoft linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 100vh;
+    }
+  }
+}
+
+/* ============================================================================
    ACESSIBILIDADE — prefers-reduced-motion
    Regra ampla (padrão recomendado) + reforço explícito nas classes do
    sistema, garantindo que nada fique preso em opacity:0.
@@ -186,6 +296,14 @@
   .reveal-fade,
   .reveal-left {
     opacity: 1;
+    transform: none;
+  }
+
+  .photo-unveil::after {
+    display: none;
+  }
+
+  .photo-unveil img {
     transform: none;
   }
 

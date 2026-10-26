@@ -1,24 +1,30 @@
+/* Faixa contínua (não cards): são selos informativos, lidos de relance,
+   então ficam numa única linha separada por filetes. */
 .section {
-  padding-block: var(--space-2xl);
   background-color: var(--color-white);
-  border-top: 1px solid var(--color-cream-deep);
-  border-bottom: 1px solid var(--color-cream-deep);
+  border-top: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-lg);
 }
 
 .item {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--space-sm);
-  padding: var(--space-lg);
-  background-color: var(--color-cream);
-  border-radius: var(--radius-md);
+  padding: var(--space-lg) var(--space-md);
+}
+
+/* Filetes verticais/horizontais entre os itens (grade 2×2 no mobile). */
+.item:nth-child(odd) {
+  border-right: 1px solid var(--color-line);
+}
+
+.item:nth-child(-n + 2) {
+  border-bottom: 1px solid var(--color-line);
 }
 
 .iconWrapper {
@@ -28,18 +34,45 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: var(--color-sage-tint);
-  color: var(--color-sage-deep);
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .label {
   font-size: var(--fs-small);
   font-weight: 600;
+  line-height: 1.35;
   color: var(--color-ink);
 }
 
-@media (min-width: 700px) {
+@media (max-width: 480px) {
+  .item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-md) var(--space-sm);
+  }
+}
+
+@media (min-width: 900px) {
   .grid {
     grid-template-columns: repeat(4, 1fr);
+  }
+
+  .item {
+    justify-content: center;
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .item:nth-child(-n + 2) {
+    border-bottom: none;
+  }
+
+  .item:nth-child(odd) {
+    border-right: none;
+  }
+
+  .item:not(:last-child) {
+    border-right: 1px solid var(--color-line);
   }
 }

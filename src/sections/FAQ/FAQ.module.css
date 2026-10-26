@@ -1,8 +1,51 @@
 .section {
   padding-block: var(--space-3xl);
-  background-color: var(--color-cream);
+  background-color: var(--color-surface);
+  /* Divisórias brancas no acordeão, mais visíveis sobre este fundo. */
+  --color-line: rgba(255, 255, 255, 0.75);
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.intro > :first-child {
+  margin-bottom: var(--space-md);
+}
+
+.help {
+  font-size: var(--fs-small);
+  color: var(--color-ink-soft);
+}
+
+.helpLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.helpLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .list {
   max-width: 760px;
+}
+
+@media (min-width: 1000px) {
+  .layout {
+    grid-template-columns: 0.75fr 1.25fr;
+    gap: var(--space-2xl);
+    align-items: start;
+  }
+
+  .intro {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-lg));
+  }
 }

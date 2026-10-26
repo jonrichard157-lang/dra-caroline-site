@@ -1,27 +1,38 @@
 .dialog {
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   padding: 0;
   max-width: 640px;
   width: min(92vw, 640px);
   box-shadow: var(--shadow-lift);
+  color: var(--color-ink);
 }
 
 .dialog::backdrop {
   background-color: rgba(58, 54, 48, 0.45);
+  backdrop-filter: blur(2px);
 }
 
 .inner {
-  padding: var(--space-xl);
-  max-height: 80vh;
+  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+  max-height: 82vh;
   overflow-y: auto;
+}
+
+@media (min-width: 600px) {
+  .inner {
+    padding: var(--space-xl);
+  }
 }
 
 .header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: var(--space-md);
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-line);
 }
 
 .title {
@@ -35,16 +46,22 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid var(--color-cream-deep);
+  border: 1px solid var(--color-line);
   background-color: var(--color-white);
   color: var(--color-ink);
   cursor: pointer;
   flex-shrink: 0;
+  transition: background-color var(--duration-fast) var(--ease-standard);
+}
+
+.closeButton:hover {
+  background-color: var(--color-surface);
 }
 
 .body {
   color: var(--color-ink-soft);
   font-size: var(--fs-small);
+  line-height: 1.7;
   display: grid;
   gap: var(--space-md);
 }

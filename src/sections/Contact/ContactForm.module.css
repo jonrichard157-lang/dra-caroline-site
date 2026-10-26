@@ -1,28 +1,47 @@
 .form {
   background-color: var(--color-white);
-  border-radius: var(--radius-md);
-  padding: var(--space-lg);
   box-shadow: var(--shadow-soft);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-md);
+  display: grid;
+  gap: var(--space-md);
+}
+
+@media (min-width: 600px) {
+  .form {
+    padding: var(--space-xl) var(--space-lg);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+  }
+}
+
+.row {
   display: grid;
   gap: var(--space-md);
 }
 
 .field {
   display: grid;
-  gap: var(--space-2xs);
+  gap: 0.4rem;
 }
 
 .label {
   font-size: var(--fs-small);
   font-weight: 600;
+  color: var(--color-ink);
 }
 
 .input,
 .select,
 .textarea {
-  border: 1.5px solid var(--color-cream-deep);
+  width: 100%;
+  border: 1.5px solid var(--color-line);
   border-radius: var(--radius-sm);
-  padding: 0.75rem 1rem;
+  padding: 0.8rem 1rem;
   font-family: var(--font-body);
   font-size: var(--fs-body);
   color: var(--color-ink);
@@ -34,43 +53,63 @@
     box-shadow var(--duration-fast) var(--ease-standard);
 }
 
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-ink-faint);
+  opacity: 0.8;
+}
+
+.input:hover,
+.textarea:hover {
+  border-color: var(--color-gray);
+}
+
 .input:focus-visible,
 .select:focus-visible,
 .textarea:focus-visible {
   outline: none;
-  border-color: var(--color-sage-deep);
-  box-shadow: 0 0 0 3px var(--color-sage-tint);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-tint);
+}
+
+.input[aria-invalid="true"],
+.textarea[aria-invalid="true"] {
+  border-color: var(--color-error);
 }
 
 .textarea {
   resize: vertical;
-  min-height: 120px;
+  min-height: 130px;
 }
 
 .errorText {
   font-size: var(--fs-caption);
-  color: #a5493f;
+  font-weight: 500;
+  color: var(--color-error);
 }
 
 .privacyNote {
   display: flex;
   align-items: flex-start;
   gap: var(--space-sm);
-  background-color: var(--color-sage-tint);
+  background-color: var(--color-primary-tint);
+  border-left: 3px solid var(--color-gold);
   border-radius: var(--radius-sm);
-  padding: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
   font-size: var(--fs-caption);
+  line-height: 1.55;
   color: var(--color-ink-soft);
 }
 
 .noteIcon {
-  color: var(--color-sage-deep);
+  color: var(--color-primary);
   flex-shrink: 0;
   margin-top: 2px;
 }
 
 .statusMessage {
   font-size: var(--fs-small);
-  color: var(--color-sage-deep);
+  color: var(--color-primary);
   font-weight: 600;
+  text-align: center;
 }

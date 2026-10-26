@@ -15,6 +15,8 @@ interface UseGoogleReviewsResult {
  * Busca as avaliações do Google uma vez ao montar o componente.
  * Toda a lógica de cache (24h) já acontece no backend (`/api/reviews`);
  * este hook só administra o estado de carregamento/erro no cliente.
+ * Vários componentes podem usar o hook ao mesmo tempo: o serviço
+ * reaproveita a mesma requisição (ver services/googleReviews.ts).
  */
 export function useGoogleReviews(): UseGoogleReviewsResult {
   const [status, setStatus] = useState<Status>("loading");
@@ -23,27 +25,28 @@ export function useGoogleReviews(): UseGoogleReviewsResult {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    const controller = new AbortController();
+    // A requisição é compartilhada, então não a cancelamos ao desmontar;
+    // apenas ignoramos o resultado se este componente já saiu da tela.
+    let isActive = true;
 
-    async function load() {
-      setStatus("loading");
-      try {
-        const data = await fetchGoogleReviews(controller.signal);
+    fetchGoogleReviews()
+      .then((data) => {
+        if (!isActive) return;
         setReviews(data.reviews);
         setMeta(data.meta);
         setStatus("success");
-      } catch (error) {
-        if (controller.signal.aborted) return;
+      })
+      .catch((error: unknown) => {
+        if (!isActive) return;
         setErrorMessage(
           error instanceof Error ? error.message : "Não foi possível carregar as avaliações.",
         );
         setStatus("error");
-      }
-    }
+      });
 
-    load();
-
-    return () => controller.abort();
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   return { status, reviews, meta, errorMessage };

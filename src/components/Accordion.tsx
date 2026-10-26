@@ -11,7 +11,7 @@ export function AccordionItem({ question, answer }: AccordionItemProps) {
     <details className={styles.item}>
       <summary className={styles.summary}>
         <span>{question}</span>
-        <Icon name="chevronDown" className={styles.icon} size={20} />
+        <Icon name="chevronDown" className={styles.icon} size={18} />
       </summary>
       <p className={styles.content}>{answer}</p>
     </details>

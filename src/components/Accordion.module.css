@@ -1,5 +1,9 @@
 .item {
-  border-bottom: 1px solid var(--color-cream-deep);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.item:first-child {
+  border-top: 1px solid var(--color-line);
 }
 
 .summary {
@@ -7,31 +11,57 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  padding-block: var(--space-md);
+  padding-block: 1.35rem;
   cursor: pointer;
   font-weight: 600;
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  color: var(--color-ink);
   list-style: none;
+  transition: color var(--duration-fast) var(--ease-standard);
 }
 
 .summary::-webkit-details-marker {
   display: none;
 }
 
+.summary:hover {
+  color: var(--color-primary);
+}
+
 .icon {
-  color: var(--color-sage-deep);
   flex-shrink: 0;
-  /* Sem rotate/flip (fora do escopo permitido pelo motion system): o
-     estado aberto é comunicado por cor, não por giro do ícone. */
-  transition: color var(--duration-fast) var(--ease-standard);
+  box-sizing: content-box;
+  padding: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--color-line);
+  color: var(--color-primary);
+  /* O giro responde a uma ação do usuário (abrir/fechar) e mostra o novo
+     estado — é o único uso de rotação no site. */
+  transition: transform var(--duration-base) var(--ease-standard),
+    background-color var(--duration-base) var(--ease-standard),
+    color var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard);
 }
 
 .item[open] .icon {
-  color: var(--color-gold);
+  transform: rotate(180deg);
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
 }
 
 .content {
-  padding-bottom: var(--space-md);
+  padding-bottom: 1.5rem;
+  padding-right: var(--space-xl);
   color: var(--color-ink-soft);
   font-size: var(--fs-small);
-  max-width: 65ch;
+  line-height: 1.7;
+  max-width: 62ch;
+}
+
+@media (max-width: 600px) {
+  .content {
+    padding-right: 0;
+  }
 }

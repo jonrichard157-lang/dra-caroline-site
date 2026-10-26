@@ -18,7 +18,9 @@ export function Treatments() {
 
         <div className={styles.grid}>
           {treatments.map((treatment, index) => (
-            <AnimatedCard key={treatment.id} index={index}>
+            // hover={false}: a linha do tratamento responde ao mouse pelo
+            // ícone (ver TreatmentCard.module.css), sem elevar o bloco.
+            <AnimatedCard key={treatment.id} index={index % 2} hover={false}>
               {/* AnimatedCard renderiza uma <div> por padrão: o próprio
                   TreatmentCard já é um <article>, evitando duplicar
                   semântica. Como grid stretches por padrão, a altura 100%
@@ -27,10 +29,6 @@ export function Treatments() {
             </AnimatedCard>
           ))}
         </div>
-
-        <p className={styles.disclaimer}>
-        
-        </p>
       </Container>
     </section>
   );

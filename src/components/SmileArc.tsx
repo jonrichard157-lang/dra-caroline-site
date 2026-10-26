@@ -1,15 +1,17 @@
 export interface SmileArcProps {
   className?: string;
   align?: "left" | "center";
+  /** Cor do traço. Padrão: dourado da marca. */
+  color?: string;
 }
 
 /**
  * Elemento gráfico assinatura do site: um arco fino e dourado, inspirado
- * na curva de um sorriso. Aparece sob os títulos de seção como um
- * substituto elegante de divisórias retas, reforçando o conceito
+ * na curva de um sorriso. Marca o rótulo de cada seção (ver
+ * SectionHeading) e aparece em pontos-chave do Início, reforçando o conceito
  * "seu sorriso merece cuidado" sem recorrer a ícones infantis.
  */
-export function SmileArc({ className, align = "left" }: SmileArcProps) {
+export function SmileArc({ className, align = "left", color = "var(--color-gold)" }: SmileArcProps) {
   return (
     <svg
       className={className}
@@ -23,9 +25,12 @@ export function SmileArc({ className, align = "left" }: SmileArcProps) {
     >
       <path
         d="M2 3.5C14 13 58 13 70 3.5"
-        stroke="var(--color-gold)"
-        strokeWidth="1.6"
+        stroke={color}
+        strokeWidth="1.75"
         strokeLinecap="round"
+        // Espessura constante em qualquer tamanho do arco (ele aparece
+        // de 28px no rótulo das seções a 72px no Início).
+        vectorEffect="non-scaling-stroke"
       />
     </svg>
   );

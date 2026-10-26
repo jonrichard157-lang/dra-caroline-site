@@ -1,33 +1,56 @@
+/* Leitura do card: nota → depoimento → quem escreveu. A ordem visual é
+   ajustada via `order` (o autor vai para o rodapé do card), mantendo o
+   HTML do componente como estava. */
 .card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-md);
   background-color: var(--color-white);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-soft);
   border: 1px solid transparent;
   transition: border-color var(--duration-base) var(--ease-standard),
     box-shadow var(--duration-base) var(--ease-standard),
     transform var(--duration-base) var(--ease-standard);
   height: 100%;
+  position: relative;
 }
 
-.card:hover {
-  border-color: var(--color-gold-soft);
-  box-shadow: var(--shadow-lift);
-  transform: translateY(-2px);
+/* Aspas decorativas em dourado, no canto — identificam o bloco como
+   citação sem competir com o texto. */
+.card::before {
+  content: "\201C";
+  position: absolute;
+  top: 0.6rem;
+  right: 1.25rem;
+  font-family: var(--font-display);
+  font-size: 4.5rem;
+  line-height: 1;
+  color: var(--color-gold);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--color-gray);
+    box-shadow: var(--shadow-lift);
+    transform: translateY(-2px);
+  }
 }
 
 .header {
+  order: 3;
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-line);
 }
 
 .avatar {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
@@ -37,14 +60,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background-color: var(--color-rose);
-  color: var(--color-sage-deep);
+  background-color: var(--color-primary);
+  color: var(--color-white);
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: var(--fs-small);
+  font-size: var(--fs-caption);
+  letter-spacing: 0.04em;
   flex-shrink: 0;
 }
 
@@ -63,12 +87,23 @@
   white-space: nowrap;
 }
 
+.authorLink {
+  text-decoration: none;
+}
+
+.authorLink:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .date {
   font-size: var(--fs-caption);
   color: var(--color-ink-faint);
 }
 
 .stars {
+  order: 1;
   display: flex;
   gap: 2px;
 }
@@ -79,18 +114,21 @@
 }
 
 .starEmpty {
-  fill: var(--color-rose-deep);
+  fill: var(--color-line);
   stroke: none;
 }
 
 .text {
-  color: var(--color-ink-soft);
+  order: 2;
+  color: var(--color-ink);
   font-size: var(--fs-small);
+  line-height: 1.7;
   flex-grow: 1;
   /* Limita o texto a 6 linhas para manter os cards com altura consistente,
      evitando layout shift e cards com alturas muito díspares na grade. */
   display: -webkit-box;
   -webkit-line-clamp: 6;
+  line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

@@ -1,30 +1,42 @@
 :root {
-  /* ---------- Cores ---------- */
+  /* ---------- Cores ----------
+     Identidade visual da Dra. Caroline. Os valores são os da paleta
+     original do site; os nomes descrevem a função de cada cor. */
   --color-white: #ffffff;
-  --color-cream: #b5c7d3;
-  --color-cream-deep: #cdcdcc;
-  --color-rose: #88959e;
-  --color-rose-deep: #babcb9;
-  --color-sage: #b5c7d3;
-  --color-sage-deep: #206291;
-  --color-sage-tint: #eaf0e7;
-  --color-gold: #b8975a;
-  --color-gold-soft: #d8c39a;
+  --color-cream: #f8f4ec; /* fundo do header e do menu mobile */
+  --color-surface: #b5c7d3; /* azul-acinzentado: seções alternadas */
+  --color-gray: #88959e; /* cinza-azulado: apoio (bordas em hover, estrelas vazias) */
+  --color-line: #cdcdcc; /* divisórias finas */
+
+  --color-primary: #206291; /* azul principal: botões, links, faixas */
+  --color-primary-deep: #184a6e; /* hover dos botões (mantém o texto branco legível) */
+  --color-primary-tint: #eaf0e7; /* anel de foco e seleção de texto */
+
+  --color-gold: #b8975a; /* dourado: só decorativo (arco, estrelas, filetes) */
+  --color-gold-soft: #d8c39a; /* dourado sobre fundo azul */
+
   --color-ink: #3a3630;
   --color-ink-soft: #6b6459;
   --color-ink-faint: #948c7f;
+
+  /* Sobre o azul-acinzentado, os tons claros da tinta perdem contraste;
+     as seções com esse fundo trocam --color-ink-soft/-faint por estes. */
+  --color-ink-soft-on-surface: #4e4840;
+  --color-ink-faint-on-surface: #5c554b;
+
+  --color-error: #a33a2f;
 
   /* ---------- Tipografia ---------- */
   --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --font-body: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-  --fs-h1: clamp(2.4rem, 4.5vw, 4rem);
-  --fs-h2: clamp(1.9rem, 3vw, 2.75rem);
-  --fs-h3: clamp(1.35rem, 2vw, 1.75rem);
-  --fs-lead: clamp(1.05rem, 1.3vw, 1.25rem);
+  --fs-h1: clamp(2.75rem, 5.2vw, 4.6rem);
+  --fs-h2: clamp(2.1rem, 3.5vw, 3.15rem);
+  --fs-h3: clamp(1.4rem, 1.9vw, 1.65rem);
+  --fs-lead: clamp(1.05rem, 1.25vw, 1.2rem);
   --fs-body: 1rem;
-  --fs-small: 0.875rem;
-  --fs-caption: 0.75rem;
+  --fs-small: 0.9375rem;
+  --fs-caption: 0.8125rem;
 
   /* ---------- Espaçamento ---------- */
   --space-2xs: 0.25rem;
@@ -34,14 +46,15 @@
   --space-lg: 2rem;
   --space-xl: 3.25rem;
   --space-2xl: 5rem;
-  --space-3xl: 7rem;
+  --space-3xl: clamp(5rem, 9vw, 7.5rem);
 
   /* ---------- Layout ---------- */
-  --container-width: 1180px;
+  --container-width: 1200px;
   --radius-sm: 8px;
-  --radius-md: 16px;
-  --radius-lg: 28px;
-  --header-height: 84px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-arch: 999px 999px 20px 20px;
+  --header-height: 80px;
 
   /* ---------- Sombras ---------- */
   --shadow-soft: 0 12px 32px -18px rgba(58, 54, 48, 0.28);

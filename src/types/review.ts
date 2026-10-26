@@ -11,6 +11,8 @@ export interface GoogleReview {
   authorName: string;
   /** URL da foto de perfil do autor. Pode ser `null` (nem toda avaliação tem foto). */
   authorPhotoUrl: string | null;
+  /** Link para o perfil do autor no Google (exigido pelas regras de atribuição da Google). */
+  authorUrl: string | null;
   /** Nota de 1 a 5. A API já entrega somente notas 4 e 5 (ver filtragem no backend). */
   rating: number;
   /** Texto da avaliação. Pode ser `null` quando o autor não escreveu comentário. */

@@ -3,20 +3,23 @@
   isolation: isolate;
 }
 
+/* Filete dourado deslocado para baixo/direita: ecoa o arco da foto sem
+   emoldurá-la por completo, dando profundidade sem peso. */
 .frame::before {
   content: "";
   position: absolute;
-  inset: -14px;
-  border: 1.5px solid var(--color-gold-soft);
-  border-radius: 200px 200px 24px 24px;
+  inset: 18px -18px -18px 18px;
+  border: 1.5px solid var(--color-gold);
+  border-radius: var(--radius-arch);
+  opacity: 0.7;
   z-index: -1;
 }
 
 .imageWrapper {
   overflow: hidden;
-  border-radius: 200px 200px 24px 24px;
+  border-radius: var(--radius-arch);
   box-shadow: var(--shadow-lift);
-  background-color: var(--color-cream-deep);
+  background-color: var(--color-surface);
   aspect-ratio: var(--frame-aspect, 3 / 4);
 }
 
@@ -25,4 +28,10 @@
   height: 100%;
   object-fit: cover;
   object-position: top center;
+}
+
+@media (max-width: 600px) {
+  .frame::before {
+    inset: 12px -12px -12px 12px;
+  }
 }

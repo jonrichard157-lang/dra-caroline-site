@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import type { ReactNode } from "react";
 import styles from "./Modal.module.css";
 import { Icon } from "./Icon";
@@ -17,6 +17,9 @@ export interface ModalProps {
  */
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  // id único por instância: um id fixo ("modal-title") se repetiria no
+  // DOM se houvesse mais de um modal na página.
+  const titleId = useId();
 
   useEffect(() => {
     const dialogElement = dialogRef.current;
@@ -34,11 +37,15 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       ref={dialogRef}
       className={styles.dialog}
       onClose={onClose}
-      aria-labelledby="modal-title"
+      onClick={(event) => {
+        // Clique no fundo escurecido (fora do conteúdo) fecha o modal.
+        if (event.target === event.currentTarget) onClose();
+      }}
+      aria-labelledby={titleId}
     >
       <div className={styles.inner}>
         <div className={styles.header}>
-          <h2 className={styles.title} id="modal-title">
+          <h2 className={styles.title} id={titleId}>
             {title}
           </h2>
           <button

@@ -1,6 +1,6 @@
 .section {
   padding-block: var(--space-3xl);
-  background-color: var(--color-cream);
+  background-color: var(--color-surface);
 }
 
 .grid {
@@ -15,17 +15,19 @@
 }
 
 .imageColumn > * {
-  width: min(340px, 100%);
+  width: min(380px, 84%);
 }
 
 .content {
-  max-width: 620px;
+  max-width: 680px;
 }
 
 .bio {
   font-size: var(--fs-lead);
+  line-height: 1.7;
   color: var(--color-ink-soft);
   margin-bottom: var(--space-xl);
+  max-width: 60ch;
 }
 
 .credentials {
@@ -34,23 +36,24 @@
 }
 
 .credentialGroup {
-  border-top: 1px solid var(--color-rose-deep);
+  border-top: 2px solid var(--color-primary);
   padding-top: var(--space-md);
 }
 
 .credentialHeading {
-  font-size: var(--fs-h3);
-  font-style: italic;
+  font-size: 1.35rem;
   margin-bottom: var(--space-sm);
+  color: var(--color-ink);
 }
 
 .credentialList {
   display: grid;
-  gap: var(--space-2xs);
+  gap: var(--space-xs);
 }
 
 .credentialItem {
   font-size: var(--fs-small);
+  line-height: 1.5;
   color: var(--color-ink-soft);
   padding-left: var(--space-md);
   position: relative;
@@ -60,18 +63,36 @@
   content: "";
   position: absolute;
   left: 0;
-  top: 0.55em;
+  top: 0.6em;
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background-color: var(--color-gold);
 }
 
+@media (min-width: 640px) {
+  .credentials {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (min-width: 900px) {
   .grid {
-    grid-template-columns: 0.85fr 1.15fr;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: var(--space-2xl);
   }
 
+  .imageColumn {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-lg));
+  }
+
+  .imageColumn > * {
+    width: min(400px, 100%);
+  }
+}
+
+@media (min-width: 1100px) {
   .credentials {
     grid-template-columns: repeat(3, 1fr);
   }

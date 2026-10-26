@@ -36,7 +36,14 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 const GOOGLE_PLACES_ENDPOINT = "https://places.googleapis.com/v1/places";
 const CACHE_TTL_SECONDS = 60 * 60 * 24; // 24 horas
-const CACHE_KEY = "google-reviews:v1";
+// v2: inclui o link do perfil do autor (authorUrl). Trocar a versão
+// descarta caches antigos sem esse campo.
+const CACHE_KEY = "google-reviews:v2";
+// Tempo máximo de espera por serviços externos. A função tem 10s no total
+// (vercel.json); sem limite, uma Google lenta derrubaria a requisição
+// inteira em vez de cair no cache de reserva.
+const GOOGLE_TIMEOUT_MS = 7000;
+const UPSTASH_TIMEOUT_MS = 2000;
 
 // Campos pedidos à Google. Manter essa lista enxuta é a principal forma
 // de reduzir custo por chamada (a Places API cobra por "field mask").
@@ -57,6 +64,7 @@ interface GoogleReview {
   id: string;
   authorName: string;
   authorPhotoUrl: string | null;
+  authorUrl: string | null;
   rating: number;
   text: string | null;
   publishTime: string;
@@ -85,6 +93,7 @@ interface GooglePlaceApiResponse {
     relativePublishTimeDescription?: string;
     authorAttribution?: {
       displayName?: string;
+      uri?: string;
       photoUri?: string;
     };
   }>;
@@ -95,6 +104,27 @@ function readEnv(name: string): string | undefined {
   return value && value.trim().length > 0 ? value.trim() : undefined;
 }
 
+/**
+ * Aceita apenas URLs https de domínios da Google. Os links e fotos vêm de
+ * conteúdo público (perfis de quem avaliou) e são renderizados no site:
+ * a validação impede que um valor inesperado (ex.: `javascript:`) vire
+ * um link ou imagem na página.
+ */
+function safeGoogleUrl(value: string | undefined): string | null {
+  if (!value) return null;
+  try {
+    // A Places API às vezes devolve URLs sem protocolo ("//lh3...").
+    const url = new URL(value.startsWith("//") ? `https:${value}` : value);
+    const isGoogleHost =
+      /(^|\.)google\.com$/.test(url.hostname) ||
+      /(^|\.)googleusercontent\.com$/.test(url.hostname) ||
+      /(^|\.)ggpht\.com$/.test(url.hostname);
+    return url.protocol === "https:" && isGoogleHost ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
 async function readFromUpstash(): Promise<CachedPayload | null> {
   const url = readEnv("UPSTASH_REDIS_REST_URL");
   const token = readEnv("UPSTASH_REDIS_REST_TOKEN");
@@ -103,6 +133,7 @@ async function readFromUpstash(): Promise<CachedPayload | null> {
   try {
     const response = await fetch(`${url}/get/${CACHE_KEY}`, {
       headers: { Authorization: `Bearer ${token}` },
+      signal: AbortSignal.timeout(UPSTASH_TIMEOUT_MS),
     });
     if (!response.ok) return null;
 
@@ -123,10 +154,14 @@ async function writeToUpstash(payload: CachedPayload): Promise<void> {
   if (!url || !token) return;
 
   try {
-    const body = encodeURIComponent(JSON.stringify(payload));
-    await fetch(`${url}/set/${CACHE_KEY}/${body}?EX=${CACHE_TTL_SECONDS}`, {
+    // O valor vai no corpo da requisição, não na URL: com várias
+    // avaliações longas, o JSON codificado na URL pode passar do limite
+    // de tamanho aceito e a gravação falhar silenciosamente.
+    await fetch(`${url}/set/${CACHE_KEY}?EX=${CACHE_TTL_SECONDS}`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(UPSTASH_TIMEOUT_MS),
     });
   } catch {
     // Se a escrita no cache falhar, a resposta atual já foi calculada
@@ -148,7 +183,8 @@ function mapGoogleReview(
     // dentro de uma mesma resposta.
     id: `${authorName}-${publishTime}-${index}`,
     authorName,
-    authorPhotoUrl: raw.authorAttribution?.photoUri ?? null,
+    authorPhotoUrl: safeGoogleUrl(raw.authorAttribution?.photoUri),
+    authorUrl: safeGoogleUrl(raw.authorAttribution?.uri),
     rating: raw.rating ?? 0,
     text: raw.text?.text?.trim() || null,
     publishTime,
@@ -157,13 +193,14 @@ function mapGoogleReview(
 }
 
 async function fetchFromGoogle(apiKey: string, placeId: string): Promise<CachedPayload> {
-  const url = `${GOOGLE_PLACES_ENDPOINT}/${placeId}?languageCode=pt-BR`;
+  const url = `${GOOGLE_PLACES_ENDPOINT}/${encodeURIComponent(placeId)}?languageCode=pt-BR`;
 
   const response = await fetch(url, {
     headers: {
       "X-Goog-Api-Key": apiKey,
       "X-Goog-FieldMask": FIELD_MASK,
     },
+    signal: AbortSignal.timeout(GOOGLE_TIMEOUT_MS),
   });
 
   if (!response.ok) {
@@ -190,6 +227,11 @@ async function fetchFromGoogle(apiKey: string, placeId: string): Promise<CachedP
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Respostas de erro nunca devem ficar guardadas na CDN: sem isso, uma
+  // falha momentânea poderia ser servida a todos os visitantes por horas.
+  res.setHeader("Cache-Control", "no-store");
+  res.setHeader("X-Content-Type-Options", "nosniff");
+
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "Método não permitido." });
@@ -274,6 +316,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // dados um pouco velhos do que quebrar a seção no site.
     const staleFallback = memoryCache ?? (await readFromUpstash());
     if (staleFallback) {
+      // Dado de reserva: cache curto na CDN para tentar a Google de novo logo.
+      res.setHeader("Cache-Control", "public, s-maxage=300, stale-while-revalidate=60");
       return res.status(200).json({
         reviews: staleFallback.reviews,
         meta: {
@@ -285,6 +329,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
+    res.setHeader("Cache-Control", "no-store");
     return res.status(502).json({ error: "Não foi possível carregar as avaliações do Google agora." });
   }
 }

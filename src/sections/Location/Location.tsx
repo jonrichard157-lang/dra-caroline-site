@@ -2,6 +2,7 @@ import styles from "./Location.module.css";
 import { Container } from "../../components/Container";
 import { SectionHeading } from "../../components/SectionHeading";
 import { Button } from "../../components/Button";
+import { AnimatedSection } from "../../components/AnimatedSection";
 import { contactInfo, whatsappDefaultMessage } from "../../data/contactInfo";
 import { buildWhatsappLink } from "../../utils/whatsapp";
 
@@ -15,7 +16,7 @@ export function Location() {
         <SectionHeading id="location-heading" eyebrow="Localização" title="Onde estamos" />
 
         <div className={styles.grid}>
-          <div className={styles.details}>
+          <AnimatedSection variant="fadeLeft" className={`${styles.details} on-surface`}>
             <div className={styles.addressBlock}>
               <p className={styles.name}>{contactInfo.professionalName}</p>
               <p className={styles.addressLine}>{contactInfo.street}</p>
@@ -42,9 +43,9 @@ export function Location() {
                 Falar pelo WhatsApp
               </Button>
             </div>
-          </div>
+          </AnimatedSection>
 
-          <div className={styles.mapWrapper}>
+          <AnimatedSection variant="fadeIn" className={styles.mapWrapper}>
             <iframe
               className={styles.map}
               src={contactInfo.mapEmbedUrl}
@@ -52,7 +53,7 @@ export function Location() {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
-          </div>
+          </AnimatedSection>
         </div>
       </Container>
     </section>

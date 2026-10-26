@@ -2,9 +2,33 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard);
+}
+
+/* O fundo translúcido com desfoque fica num pseudo-elemento, não no
+   próprio <header>: `backdrop-filter` no header vira o bloco de referência
+   de qualquer filho `position: fixed`, e o menu mobile ficava preso dentro
+   dos 80px do header (abria mostrando só o primeiro link). */
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background-color: rgba(248, 244, 236, 0.92);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--color-cream-deep);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  backdrop-filter: saturate(160%) blur(12px);
+  transition: background-color var(--duration-base) var(--ease-standard);
+}
+
+.scrolled {
+  border-bottom-color: var(--color-line);
+  box-shadow: 0 8px 24px -20px rgba(58, 54, 48, 0.35);
+}
+
+.scrolled::before {
+  background-color: rgba(248, 244, 236, 0.97);
 }
 
 .inner {
@@ -18,22 +42,29 @@
 .brand {
   text-decoration: none;
   color: var(--color-ink);
+  min-width: 0;
 }
 
+/* O nome em itálico é a assinatura da marca. Fora daqui, o itálico só aparece no rodapé. */
 .brandName {
   display: block;
   font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-size: 1.4rem;
+  font-weight: 600;
   font-style: italic;
   line-height: 1.1;
+  color: var(--color-ink);
+  white-space: nowrap;
 }
 
 .brandTitle {
   display: block;
-  font-size: var(--fs-caption);
-  color: var(--color-ink-soft);
-  letter-spacing: 0.05em;
-  margin-top: 2px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-ink-faint);
+  letter-spacing: 0.02em;
+  margin-top: 3px;
+  white-space: nowrap;
 }
 
 .nav {
@@ -43,21 +74,38 @@
 .navList {
   display: flex;
   align-items: center;
-  gap: var(--space-lg);
+  gap: 1.75rem;
 }
 
 .navLink {
+  position: relative;
   text-decoration: none;
-  color: var(--color-ink);
+  color: var(--color-ink-soft);
   font-size: var(--fs-small);
   font-weight: 500;
   padding-block: var(--space-xs);
-  border-bottom: 1.5px solid transparent;
-  transition: border-color var(--duration-base) var(--ease-standard);
+  transition: color var(--duration-base) var(--ease-standard);
+}
+
+.navLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 1.5px;
+  background-color: var(--color-gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-base) var(--ease-standard);
 }
 
 .navLink:hover {
-  border-color: var(--color-gold);
+  color: var(--color-primary);
+}
+
+.navLink:hover::after {
+  transform: scaleX(1);
 }
 
 .actions {
@@ -66,7 +114,11 @@
   gap: var(--space-md);
 }
 
-.ctaDesktop {
+/* Seletores compostos (.actions ...) de propósito: o botão também recebe
+   classes de Button.module.css e de motion.css, com a mesma
+   especificidade, que redefiniam `display` e deixavam o CTA de desktop
+   visível no mobile e o hambúrguer visível no desktop. */
+.actions .ctaDesktop {
   display: none;
 }
 
@@ -74,26 +126,41 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-cream-deep);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--color-line);
   background-color: var(--color-white);
-  color: var(--color-ink);
+  color: var(--color-primary);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
-@media (min-width: 900px) {
+/* O menu completo só cabe ao lado do nome e do botão a partir de ~1080px;
+   abaixo disso, menu hambúrguer (antes quebrava linha entre 900 e 1080px). */
+@media (min-width: 1080px) {
   .nav {
     display: block;
   }
 
-  .ctaDesktop {
+  .actions .ctaDesktop {
     display: inline-flex;
+    min-height: 44px;
+    padding: 0.7rem 1.35rem;
   }
 
-  .menuButton {
+  .actions .menuButton {
     display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .brandName {
+    font-size: 1.2rem;
+  }
+
+  .brandTitle {
+    font-size: 0.6875rem;
   }
 }
 
@@ -104,8 +171,9 @@
   top: var(--header-height);
   background-color: var(--color-cream);
   z-index: 90;
-  padding: var(--space-lg);
+  padding: var(--space-md) var(--space-lg) var(--space-xl);
   overflow-y: auto;
+  border-top: 1px solid var(--color-line);
   /* Painel iniciado pelo usuário (toque no botão de menu): usa ease-out
      direto, sem IntersectionObserver — é uma abertura, não um scroll reveal. */
   animation: menuEnter var(--duration-base) var(--ease-reveal);
@@ -125,21 +193,32 @@
 .mobileList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
 }
 
 .mobileLink {
+  display: block;
+  padding-block: 0.85rem;
+  border-bottom: 1px solid var(--color-line);
   text-decoration: none;
   color: var(--color-ink);
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-weight: 600;
+  font-size: 1.65rem;
+  line-height: 1.2;
 }
 
 .mobileCta {
   margin-top: var(--space-lg);
 }
 
-@media (min-width: 900px) {
+.mobileContact {
+  margin-top: var(--space-md);
+  font-size: var(--fs-caption);
+  color: var(--color-ink-faint);
+  text-align: center;
+}
+
+@media (min-width: 1080px) {
   .mobileMenu {
     display: none;
   }

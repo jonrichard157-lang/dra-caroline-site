@@ -1,18 +1,105 @@
 .section {
   padding-block: var(--space-3xl);
-  background-color: var(--color-rose);
+  background-color: var(--color-gray);
+  /* Sobre o cinza, o azul do rótulo e os tons claros da tinta somem:
+     tudo que fica direto no fundo usa a tinta principal. Os cards são
+     brancos e mantêm a hierarquia de cores própria. */
+  --eyebrow-color: var(--color-ink);
 }
 
+.top,
+.footer {
+  --color-ink-soft: var(--color-ink);
+  --color-ink-faint: var(--color-ink);
+}
+
+.top {
+  display: grid;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.top > :first-child {
+  margin-bottom: 0;
+}
+
+/* ---------- Resumo da nota ---------- */
+.summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  box-shadow: var(--shadow-soft);
+  justify-self: start;
+}
+
+.summaryValue {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 3.25rem;
+  line-height: 1;
+  color: var(--color-primary);
+}
+
+.summaryDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summaryStars {
+  display: flex;
+  gap: 2px;
+}
+
+.starFilled {
+  fill: var(--color-gold);
+  stroke: none;
+}
+
+.starEmpty {
+  fill: var(--color-line);
+  stroke: none;
+}
+
+.summaryCount {
+  font-size: var(--fs-caption);
+  font-weight: 500;
+  color: var(--color-ink-soft);
+}
+
+@media (min-width: 900px) {
+  .top {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+  }
+
+  .summary {
+    justify-self: end;
+  }
+}
+
+/* ---------- Grade ---------- */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-md);
 }
 
 .footer {
   margin-top: var(--space-xl);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.attribution {
+  font-size: var(--fs-caption);
+  color: var(--color-ink-faint);
+  font-weight: 500;
 }
 
 .stateMessage {
@@ -35,7 +122,7 @@
   background-color: var(--color-white);
   border-radius: var(--radius-md);
   padding: var(--space-lg);
-  box-shadow: var(--shadow-soft);
+  min-height: 220px;
   height: 100%;
 }
 
@@ -43,14 +130,15 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
 }
 
 .skeletonAvatar {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   flex-shrink: 0;
-  background-color: var(--color-cream);
+  background-color: var(--color-surface);
   animation: shimmer 1.4s ease-in-out infinite;
 }
 
@@ -64,7 +152,7 @@
 .skeletonLine {
   height: 0.75rem;
   border-radius: 999px;
-  background-color: var(--color-cream);
+  background-color: var(--color-surface);
   animation: shimmer 1.4s ease-in-out infinite;
 }
 

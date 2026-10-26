@@ -26,7 +26,9 @@ export function Footer() {
             <p className={styles.addressLine}>
               {contactInfo.neighborhood} – {contactInfo.city}/SP
             </p>
-            <p className={styles.addressLine}>{contactInfo.phoneDisplay}</p>
+            <a className={styles.phoneLink} href={`tel:+${contactInfo.whatsappNumber}`}>
+              {contactInfo.phoneDisplay}
+            </a>
           </div>
 
           <nav aria-label="Navegação do rodapé">
@@ -72,8 +74,8 @@ export function Footer() {
           <span>
             © {currentYear} {contactInfo.professionalName}. Todos os direitos reservados.
           </span>
-          {/* CONFIRMAR: crédito de desenvolvimento, se aplicável */}
-          <span className={styles.credit}>Desenvolvimento: a confirmar</span>
+          {/* Crédito de desenvolvimento: adicione aqui um <span className={styles.credit}>
+              quando houver um texto definitivo (o placeholder ficava visível no site). */}
         </div>
       </Container>
 

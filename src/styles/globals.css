@@ -8,6 +8,10 @@
 
 html {
   scroll-behavior: smooth;
+  /* Âncoras do menu (#about, #treatments...) param abaixo do header fixo,
+     em vez de esconder o título da seção atrás dele. */
+  scroll-padding-top: var(--header-height);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -16,8 +20,18 @@ body {
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--fs-body);
-  line-height: 1.6;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* Cormorant usa algarismos "antigos" (que descem da linha) por padrão;
+     notas, passos e telefones ficam alinhados com algarismos de caixa alta. */
+  font-variant-numeric: lining-nums;
+}
+
+::selection {
+  background-color: var(--color-primary-tint);
+  color: var(--color-primary-deep);
 }
 
 img {
@@ -32,12 +46,15 @@ h4 {
   font-family: var(--font-display);
   color: var(--color-ink);
   margin: 0;
-  line-height: 1.15;
-  font-weight: 500;
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
 p {
   margin: 0;
+  text-wrap: pretty;
 }
 
 a {
@@ -48,18 +65,33 @@ button {
   font-family: inherit;
 }
 
-ul {
+ul,
+ol {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* ---------- Seções com fundo azul-acinzentado ----------
+   Os tons claros da tinta não têm contraste suficiente sobre
+   --color-surface; quem aplica este fundo também aplica esta classe. */
+.on-surface {
+  --color-ink-soft: var(--color-ink-soft-on-surface);
+  --color-ink-faint: var(--color-ink-faint-on-surface);
+}
+
 /* ---------- Layout utilitário ---------- */
 .container {
   width: 100%;
-  max-width: var(--container-width);
+  max-width: calc(var(--container-width) + 2 * var(--space-lg));
   margin-inline: auto;
   padding-inline: var(--space-lg);
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding-inline: var(--space-md);
+  }
 }
 
 .visually-hidden {
@@ -76,9 +108,9 @@ ul {
 
 .skip-link {
   position: absolute;
-  top: -48px;
+  top: -64px;
   left: var(--space-md);
-  background: var(--color-ink);
+  background: var(--color-primary);
   color: var(--color-white);
   padding: var(--space-sm) var(--space-md);
   border-radius: var(--radius-sm);
@@ -97,7 +129,7 @@ input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
 summary:focus-visible {
-  outline: 2px solid var(--color-sage-deep);
+  outline: 2px solid var(--color-primary);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }

@@ -8,6 +8,10 @@ import { buildWhatsappLink } from "../../utils/whatsapp";
 import { hasContactFormErrors, validateContactForm } from "../../utils/validateContactForm";
 import type { ContactFormErrors, ContactFormValues } from "../../types/contact";
 
+// Limites de tamanho: a mensagem vira parte de um link do WhatsApp, e
+// URLs muito longas são truncadas ou recusadas por alguns navegadores.
+const MAX_LENGTH = { name: 80, phone: 20, subject: 100, message: 1000 } as const;
+
 const initialValues: ContactFormValues = {
   name: "",
   phone: "",
@@ -62,47 +66,52 @@ export function ContactForm() {
         </span>
       </div>
 
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor={nameId}>
-          Nome
-        </label>
-        <input
-          id={nameId}
-          className={styles.input}
-          type="text"
-          autoComplete="name"
-          value={values.name}
-          onChange={(event) => handleChange("name", event.target.value)}
-          aria-invalid={Boolean(errors.name)}
-          aria-describedby={errors.name ? `${nameId}-error` : undefined}
-        />
-        {errors.name && (
-          <span className={styles.errorText} id={`${nameId}-error`} role="alert">
-            {errors.name}
-          </span>
-        )}
-      </div>
+      <div className={styles.row}>
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor={nameId}>
+            Nome
+          </label>
+          <input
+            id={nameId}
+            className={styles.input}
+            type="text"
+            autoComplete="name"
+            maxLength={MAX_LENGTH.name}
+            value={values.name}
+            onChange={(event) => handleChange("name", event.target.value)}
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={errors.name ? `${nameId}-error` : undefined}
+          />
+          {errors.name && (
+            <span className={styles.errorText} id={`${nameId}-error`} role="alert">
+              {errors.name}
+            </span>
+          )}
+        </div>
 
-      <div className={styles.field}>
-        <label className={styles.label} htmlFor={phoneId}>
-          Telefone
-        </label>
-        <input
-          id={phoneId}
-          className={styles.input}
-          type="tel"
-          autoComplete="tel"
-          placeholder="(11) 99999-9999"
-          value={values.phone}
-          onChange={(event) => handleChange("phone", event.target.value)}
-          aria-invalid={Boolean(errors.phone)}
-          aria-describedby={errors.phone ? `${phoneId}-error` : undefined}
-        />
-        {errors.phone && (
-          <span className={styles.errorText} id={`${phoneId}-error`} role="alert">
-            {errors.phone}
-          </span>
-        )}
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor={phoneId}>
+            Telefone
+          </label>
+          <input
+            id={phoneId}
+            className={styles.input}
+            type="tel"
+            autoComplete="tel"
+            inputMode="tel"
+            maxLength={MAX_LENGTH.phone}
+            placeholder="(11) 99999-9999"
+            value={values.phone}
+            onChange={(event) => handleChange("phone", event.target.value)}
+            aria-invalid={Boolean(errors.phone)}
+            aria-describedby={errors.phone ? `${phoneId}-error` : undefined}
+          />
+          {errors.phone && (
+            <span className={styles.errorText} id={`${phoneId}-error`} role="alert">
+              {errors.phone}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className={styles.field}>
@@ -114,6 +123,7 @@ export function ContactForm() {
           className={styles.input}
           type="text"
           placeholder="Ex.: Avaliação odontológica"
+          maxLength={MAX_LENGTH.subject}
           value={values.subject}
           onChange={(event) => handleChange("subject", event.target.value)}
           aria-invalid={Boolean(errors.subject)}
@@ -133,6 +143,7 @@ export function ContactForm() {
         <textarea
           id={messageId}
           className={styles.textarea}
+          maxLength={MAX_LENGTH.message}
           value={values.message}
           onChange={(event) => handleChange("message", event.target.value)}
           aria-invalid={Boolean(errors.message)}

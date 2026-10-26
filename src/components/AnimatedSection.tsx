@@ -7,10 +7,14 @@ export interface AnimatedSectionProps {
   children: ReactNode;
   /** Preset de entrada. Padrão "fadeUp" (== sectionReveal), o mais usado no site. */
   variant?: RevealVariant;
-  /** Quando true, os filhos diretos entram em sequência (ver .reveal-stagger em motion.css). */
+  /**
+   * Quando true, os filhos diretos entram em sequência (ver .reveal-stagger
+   * em motion.css). Cada filho precisa da classe do preset (ex.:
+   * `revealVariants.fadeUp`); o container em si não se move.
+   */
   stagger?: boolean;
   /** Elemento HTML a renderizar (div por padrão; útil para ul/ol em listas). */
-  as?: "div" | "ul";
+  as?: "div" | "ul" | "ol";
   className?: string;
 }
 
@@ -36,7 +40,7 @@ export function AnimatedSection({
   const { ref, isVisible } = useReveal<HTMLDivElement>();
 
   const classNames = [
-    revealVariants[variant],
+    stagger ? "" : revealVariants[variant],
     isVisible ? "is-visible" : "",
     stagger ? staggerChildrenClass : "",
     className,

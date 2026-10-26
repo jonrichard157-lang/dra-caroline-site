@@ -9,3 +9,5 @@ dist-ssr
 vite.config.js
 vite.config.d.ts
 .env*
+# O modelo de variáveis (sem valores reais) continua versionado
+!.env.example

@@ -1,6 +1,8 @@
 import styles from "./HowItWorks.module.css";
 import { Container } from "../../components/Container";
 import { SectionHeading } from "../../components/SectionHeading";
+import { AnimatedSection } from "../../components/AnimatedSection";
+import { revealVariants } from "../../animations/motion";
 import { processSteps } from "../../data/processSteps";
 
 export function HowItWorks() {
@@ -13,17 +15,20 @@ export function HowItWorks() {
           title="Do primeiro contato ao seu plano de tratamento"
         />
 
-        <ol className={styles.list}>
+        {/* As etapas entram em sequência e a linha entre elas se desenha
+            logo depois (ver HowItWorks.module.css): o movimento reforça que
+            o conteúdo é um passo a passo. */}
+        <AnimatedSection as="ol" stagger className={styles.list}>
           {processSteps.map((step) => (
-            <li className={styles.step} key={step.id}>
+            <li className={`${styles.step} ${revealVariants.fadeUp}`} key={step.id}>
               <span className={styles.stepNumber} aria-hidden="true">
-                {String(step.order).padStart(2, "0")}
+                {step.order}
               </span>
               <h3 className={styles.stepTitle}>{step.title}</h3>
               <p className={styles.stepDescription}>{step.description}</p>
             </li>
           ))}
-        </ol>
+        </AnimatedSection>
       </Container>
     </section>
   );

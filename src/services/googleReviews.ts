@@ -5,12 +5,18 @@ import type { GoogleReviewsErrorResponse, GoogleReviewsResponse } from "../types
  * exclusivamente a API serverless `/api/reviews`. Este serviço nunca
  * fala diretamente com a Google — a key da Places API existe apenas no
  * servidor (ver api/reviews.ts).
+ *
+ * A requisição é compartilhada: o Início (nota média) e a seção de
+ * Depoimentos (cards) usam os mesmos dados, então a página faz uma única
+ * chamada, não importa quantos componentes peçam as avaliações. Em caso
+ * de erro a promise é descartada, permitindo uma nova tentativa depois.
  */
-export async function fetchGoogleReviews(signal?: AbortSignal): Promise<GoogleReviewsResponse> {
+let pendingRequest: Promise<GoogleReviewsResponse> | null = null;
+
+async function requestGoogleReviews(): Promise<GoogleReviewsResponse> {
   const response = await fetch("/api/reviews", {
     method: "GET",
     headers: { Accept: "application/json" },
-    signal,
   });
 
   if (!response.ok) {
@@ -19,4 +25,14 @@ export async function fetchGoogleReviews(signal?: AbortSignal): Promise<GoogleRe
   }
 
   return (await response.json()) as GoogleReviewsResponse;
+}
+
+export function fetchGoogleReviews(): Promise<GoogleReviewsResponse> {
+  if (!pendingRequest) {
+    pendingRequest = requestGoogleReviews().catch((error: unknown) => {
+      pendingRequest = null;
+      throw error;
+    });
+  }
+  return pendingRequest;
 }

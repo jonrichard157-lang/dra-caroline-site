@@ -3,34 +3,123 @@
   background-color: var(--color-white);
 }
 
+/* Linha do tempo: o conteúdo é de fato uma sequência, então a numeração
+   e a linha que liga as etapas carregam informação. */
 .list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-xl);
-  counter-reset: step;
+  gap: var(--space-lg);
   position: relative;
 }
 
 .step {
   position: relative;
-  padding-top: var(--space-lg);
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  column-gap: var(--space-md);
+  align-items: start;
 }
 
+/* Linha vertical ligando as etapas (mobile). */
+.step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 27px;
+  top: 60px;
+  bottom: calc(-1 * var(--space-lg) + 4px);
+  width: 1px;
+  background-color: var(--color-line);
+  /* A linha "se desenha" depois que a etapa aparece: começa recolhida e
+     cresce na direção da próxima etapa (para baixo aqui; para a direita
+     no desktop). Tokens de duração/curva vêm de motion.css. */
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform var(--duration-draw) var(--ease-reveal);
+}
+
+.list:global(.is-visible) .step::after {
+  transform: none;
+}
+
+/* Cada linha começa depois que a etapa de origem já entrou. */
+.step:nth-child(1)::after { transition-delay: calc(var(--stagger-step) * 1 + 200ms); }
+.step:nth-child(2)::after { transition-delay: calc(var(--stagger-step) * 2 + 200ms); }
+.step:nth-child(3)::after { transition-delay: calc(var(--stagger-step) * 3 + 200ms); }
+
 .stepNumber {
+  grid-row: span 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-gold);
+  background-color: var(--color-white);
   font-family: var(--font-display);
-  font-style: italic;
-  font-size: 2.25rem;
-  color: var(--color-gold);
-  display: block;
-  margin-bottom: var(--space-sm);
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-primary);
+  position: relative;
+  z-index: 1;
 }
 
 .stepTitle {
   font-size: var(--fs-h3);
   margin-bottom: var(--space-xs);
+  padding-top: 0.75rem;
 }
 
 .stepDescription {
   color: var(--color-ink-soft);
   font-size: var(--fs-small);
+  line-height: 1.6;
+  max-width: 34ch;
+}
+
+@media (min-width: 900px) {
+  .list {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .step {
+    grid-template-columns: 1fr;
+  }
+
+  /* Linha horizontal ligando as etapas (desktop). */
+  .step:not(:last-child)::after {
+    left: 72px;
+    right: calc(-1 * var(--space-lg) + 16px);
+    top: 28px;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .list:global(.is-visible) .step::after {
+    transform: none;
+  }
+
+  .stepNumber {
+    grid-row: auto;
+    margin-bottom: var(--space-md);
+  }
+
+  /* Altura de duas linhas para todos os títulos: as descrições ficam
+     alinhadas mesmo quando um título cabe em uma linha só. */
+  .stepTitle {
+    padding-top: 0;
+    min-height: 2.2em;
+  }
+}
+
+/* Especificidade maior que `.step:not(:last-child)::after`, que define a
+   linha recolhida — sem isso, a linha ficaria invisível. */
+@media (prefers-reduced-motion: reduce) {
+  .list .step:not(:last-child)::after {
+    transform: none;
+  }
 }

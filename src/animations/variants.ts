@@ -29,6 +29,15 @@ export const hoverCard = "hover-card";
 /** Microinteração de hover para ícones. */
 export const hoverIcon = "hover-icon";
 
+/** Revelação de foto (cortina + zoom leve) — usada pelo FramedPhoto com `reveal`. */
+export const photoUnveil = "photo-unveil";
+
+/** Barra de progresso da rolagem (no header). */
+export const scrollProgress = "scroll-progress";
+
+/** Parallax leve ligado à rolagem (foto do Início). */
+export const parallaxSoft = "parallax-soft";
+
 /** Feedback de "pressão" (scale sutil no `:active`) — usado pelo AnimatedButton. */
 export const buttonHover = "pressable";
 

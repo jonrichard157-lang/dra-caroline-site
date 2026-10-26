@@ -2,34 +2,49 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-xs);
+  gap: 0.6rem;
   font-family: var(--font-body);
   font-weight: 600;
   font-size: var(--fs-small);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.005em;
+  line-height: 1.2;
   border-radius: 999px;
-  padding: 0.9rem 1.6rem;
-  min-height: 48px;
+  padding: 0.95rem 1.6rem;
+  min-height: 50px;
   border: 1.5px solid transparent;
   cursor: pointer;
   text-decoration: none;
+  text-align: center;
   transition: transform var(--duration-fast) var(--ease-standard),
     background-color var(--duration-base) var(--ease-standard),
     border-color var(--duration-base) var(--ease-standard),
-    color var(--duration-base) var(--ease-standard);
+    color var(--duration-base) var(--ease-standard),
+    box-shadow var(--duration-base) var(--ease-standard);
 }
 
-.button:hover {
-  transform: translateY(-1px);
+.button svg {
+  flex-shrink: 0;
 }
 
-.primary {
-  background-color: var(--color-sage-deep);
+@media (hover: hover) {
+  .button:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Primário e WhatsApp: azul principal da marca. No hover escurece em vez
+   de clarear — o texto branco mantém o contraste nos dois estados. */
+.primary,
+.whatsapp {
+  background-color: var(--color-primary);
   color: var(--color-white);
+  box-shadow: 0 10px 24px -14px rgba(32, 98, 145, 0.7);
 }
 
-.primary:hover {
-  background-color: var(--color-sage);
+.primary:hover,
+.whatsapp:hover {
+  background-color: var(--color-primary-deep);
+  box-shadow: 0 14px 28px -14px rgba(32, 98, 145, 0.8);
 }
 
 .secondary {
@@ -43,23 +58,15 @@
   color: var(--color-white);
 }
 
-.whatsapp {
-  background-color: var(--color-sage-deep);
-  color: var(--color-white);
-}
-
-.whatsapp:hover {
-  background-color: var(--color-sage);
-}
-
 .ghost {
-  background-color: transparent;
+  background-color: var(--color-white);
   color: var(--color-ink);
-  border-color: var(--color-rose-deep);
+  border-color: var(--color-line);
 }
 
 .ghost:hover {
-  background-color: var(--color-rose);
+  border-color: var(--color-gray);
+  background-color: var(--color-surface);
 }
 
 .fullWidth {

@@ -1,4 +1,4 @@
-import { createElement, type ReactNode } from "react";
+import { createElement, useState, type ReactNode, type TransitionEvent } from "react";
 import { useReveal } from "../hooks/useReveal";
 import { revealVariants, hoverCard, STAGGER_STEP_MS } from "../animations/motion";
 import type { RevealVariant } from "../animations/motion";
@@ -36,6 +36,16 @@ export function AnimatedCard({
   as: Component = "div",
 }: AnimatedCardProps) {
   const { ref, isVisible } = useReveal<HTMLDivElement>();
+  // O atraso escalonado só vale para a entrada. Sem removê-lo depois, o
+  // mesmo `transition-delay` seria aplicado ao hover — o 6º card levaria
+  // 350ms para reagir ao mouse.
+  const [hasEntered, setHasEntered] = useState(false);
+
+  function handleTransitionEnd(event: TransitionEvent<HTMLElement>) {
+    if (isVisible && event.target === event.currentTarget && event.propertyName === "opacity") {
+      setHasEntered(true);
+    }
+  }
 
   const classNames = [revealVariants[variant], isVisible ? "is-visible" : "", hover ? hoverCard : "", className]
     .filter(Boolean)
@@ -46,7 +56,12 @@ export function AnimatedCard({
   // então tipar isso com union de tags via JSX geraria atrito desnecessário.
   return createElement(
     Component,
-    { ref, className: classNames, style: { transitionDelay: `${index * STAGGER_STEP_MS}ms` } },
+    {
+      ref,
+      className: classNames,
+      style: hasEntered ? undefined : { transitionDelay: `${index * STAGGER_STEP_MS}ms` },
+      onTransitionEnd: hasEntered ? undefined : handleTransitionEnd,
+    },
     children,
   );
 }
